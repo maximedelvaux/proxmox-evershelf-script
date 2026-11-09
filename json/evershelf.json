@@ -1,0 +1,60 @@
+{
+  "name": "EverShelf",
+  "slug": "evershelf",
+  "categories": [],
+  "date_created": "2026-11-08",
+  "type": "ct",
+  "updateable": true,
+  "privileged": false,
+  "architectures": ["amd64"],
+  "interface_port": 443,
+  "documentation": "https://github.com/dadaloop82/EverShelf/wiki",
+  "website": "https://evershelf.site",
+  "repository": "https://github.com/dadaloop82/EverShelf",
+  "logo": "https://raw.githubusercontent.com/dadaloop82/EverShelf/main/assets/img/logo/logo_icon_512.png",
+  "description": "EverShelf is a self-hosted smart pantry manager: inventory for pantry, fridge and freezer, barcode scanning, expiry tracking with offline OCR, smart shopping lists and AI recipes (Gemini, OpenAI or a local OpenAI-compatible model). Data lives in SQLite, with built-in daily backups.",
+  "install_methods": [
+    {
+      "type": "ct",
+      "script": "ct/evershelf.sh",
+      "config_path": "/opt/evershelf/.env",
+      "resources": { "cpu": 1, "ram": 1024, "hdd": 4, "os": "debian", "version": "13" }
+    }
+  ],
+  "app_vars": [
+    {
+      "name": "var_evershelf_access",
+      "label": "Remote access",
+      "type": "select",
+      "default": "lan",
+      "options": ["lan", "tailscale", "cloudflare", "both"],
+      "required": false,
+      "secret": false,
+      "help": "lan: no remote access. tailscale: private access from your tailnet. cloudflare: public URL through a Cloudflare Tunnel (API token enforced). both: Tailscale and Cloudflare."
+    },
+    {
+      "name": "var_tailscale_authkey",
+      "label": "Tailscale auth key",
+      "type": "password",
+      "default": "",
+      "required": false,
+      "secret": true,
+      "help": "Optional. Empty: sign in with a link during install."
+    },
+    {
+      "name": "var_cloudflared_token",
+      "label": "Cloudflare Tunnel token",
+      "type": "password",
+      "default": "",
+      "required": false,
+      "secret": true,
+      "help": "Token of a remotely managed tunnel (Zero Trust → Networks → Tunnels). Empty: connect later with `cloudflared service install <TOKEN>`."
+    }
+  ],
+  "default_credentials": { "username": null, "password": null },
+  "notes": [
+    { "text": "Served over HTTPS with a self-signed certificate (the camera needs a secure context): accept the browser warning once. Also reachable as `https://<hostname>.local`.", "type": "info" },
+    { "text": "Optional remote access at install: Tailscale (private, valid HTTPS via tailscale serve) and/or Cloudflare Tunnel (public; API token enforced, pair each browser with `evershelf-pairing-code`).", "type": "info" },
+    { "text": "The first-run wizard asks for the language and the AI provider key (Gemini, OpenAI or a local model).", "type": "info" }
+  ]
+}

@@ -1,0 +1,19 @@
+name: Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bash syntax
+        run: bash -n ct/evershelf.sh && bash -n install/evershelf-install.sh
+      - name: ShellCheck
+        # SC1090: dynamic `source` of the community-scripts loader (official template).
+        # SC2164: `cd` without `|| exit` — catch_errors already aborts on failure.
+        run: shellcheck -S warning -e SC1090,SC2164 ct/evershelf.sh install/evershelf-install.sh
+      - name: JSON metadata
+        run: python3 -m json.tool json/evershelf.json > /dev/null
